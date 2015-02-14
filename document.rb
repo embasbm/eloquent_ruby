@@ -27,10 +27,24 @@ class Document
     common_duplas = first_doc_ngrams & second_doc_ngrams
     common_duplas.size / (first_doc_ngrams.size).to_f * 100
   end
+
+  def add_authors( *names )
+    @author += " #{names.join(' ')}"
+  end
+
+  def average_word_length
+    total = words.inject(0.0){ |result, word| word.size + result}
+    total / word_count
+  end
 end
 
 doc = Document.new( 'Hamlet', 'Shakespeare', 'To be or seem and behave...' )
 
-doc2 = Document.new( 'Quijote', 'Cervantes', 'To be or seem and ' )
+doc.add_authors('Mary','Joseph')
+doc.add_authors(['Phil','Alan'])
 
-p "#{doc.title} and #{doc2.title} have #{doc.same_author_probability(doc2)}% probability to be written by the same author: #{doc.author}"
+p "#{doc.author.gsub(' ',',')} are the authors of #{doc.title}"
+p "#{doc.average_word_length.round} is the #{'average_word_length'.gsub('_',' ')}"
+
+
+
