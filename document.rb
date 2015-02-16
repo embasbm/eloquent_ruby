@@ -52,13 +52,3 @@ class Document
   end
 end
 
-doc = Document.new( 'Hamlet', 'Shakespeare', 'To be or seem and behave...' )
-
-doc.add_authors('Mary','Joseph')
-doc.add_authors(['Phil','Alan'])
-
-p "#{doc.author.gsub(' ',',')} are the authors of #{doc.title}"
-p "#{doc.average_word_length.round} is the #{'average_word_length'.gsub('_',' ')}"
-
-
-
