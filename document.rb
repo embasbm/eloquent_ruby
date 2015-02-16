@@ -50,5 +50,37 @@ class Document
   def to_s
     "Document: #{title} by #{author}"
   end
+
+  def +(other)
+    Document.new(title, author, "#{content} #{other.content}")
+  end
+
+  def +@
+    Document.new(title, author, "I am sure that #{content}")
+  end
+
+  def -@
+    Document.new(title, author, "I doubt that #{content}")
+  end
+
+  def [](index)
+    words[index]
+  end
+
+  def size
+
+  end
+
+  def []=(index,value)
+    orig = words
+    word_count > index ? orig.insert(index,value) : orig.insert(word_count,value)
+    @content = orig.join(' ')
+  end
 end
 
+favorite = Document.new('Favorite', 'Russ', 'Chocolate is best')
+
+favorite[0]= 'Black'
+favorite[3]= 'almost the'
+favorite[20]= ',I guess.'
+puts favorite.content
