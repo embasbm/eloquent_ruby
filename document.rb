@@ -1,4 +1,6 @@
 class Document
+  include Enumerable
+
   attr_accessor :title, :author, :content
 
   def initialize(title, author, content)
@@ -76,11 +78,44 @@ class Document
     word_count > index ? orig.insert(index,value) : orig.insert(word_count,value)
     @content = orig.join(' ')
   end
+
+  def each_word
+    words.each { |word| yield( word ) }
+  end
+
+  def each_character
+    words.each { |word| word.split('').each {|char| yield( char )} }
+  end
+
+  def each_word_pair
+    words.each_cons(2) { |array| yield array[0], array[1] }
+  end
+
+  def each
+    words.each { |word| yield( word ) }
+  end
 end
 
-favorite = Document.new('Favorite', 'Russ', 'Chocolate is best')
+d = Document.new( 'Truth', 'Gump', 'we are all characters' )
+enum = Enumerator.new(d, :each_character)
+puts enum.count
 
-favorite[0]= 'Black'
-favorite[3]= 'almost the'
-favorite[20]= ',I guess.'
-puts favorite.content
+print enum.sort
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
