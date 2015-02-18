@@ -2,6 +2,10 @@ class Document
   include Enumerable
 
   attr_accessor :title, :author, :content
+  attr_accessor :load_listener
+  attr_accessor :save_listener
+
+
 
   def initialize(title, author, content)
     @title = title
@@ -94,14 +98,45 @@ class Document
   def each
     words.each { |word| yield( word ) }
   end
+
+  # def load(path)
+  #   @content = File.read(path)
+  #   load_listener.on_load(self, path) if load_listener
+  # end
+
+  # def save(path)
+  #   File.open(path, 'w') {f.print(@contents)}
+  #   save_listener.on_save(self, path) if save_listener
+  # end
+
+  def on_save(&block)
+    @save_listener=block
+  end
+
+  def on_load(&block)
+    @load_listener=block
+  end
+
+  def load(path)
+    @content = File.read(path)
+    @load_listener.call(self, path) if @load_listener
+  end
+
+  def save(path)
+    File.open(path, 'w') {|f| f.print(@contents)}
+    @save_listener.call(self, path) if @save_listener
+  end
+
 end
 
-d = Document.new( 'Truth', 'Gump', 'we are all characters' )
-enum = Enumerator.new(d, :each_character)
-puts enum.count
 
-print enum.sort
-
+my_doc = Document.new( 'Block Based Example', 'russ', '' )
+my_doc.on_load do |doc|
+  puts "Hey, I've been loaded!"
+end
+my_doc.on_save do |doc|
+  puts "Hey, I've been saved!"
+end
 
 
 
