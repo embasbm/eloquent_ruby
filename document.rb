@@ -1,5 +1,8 @@
+require 'text'
+
 class Document
   include Enumerable
+  include Text
 
   attr_accessor :title, :author, :content
   attr_accessor :load_listener
@@ -127,19 +130,42 @@ class Document
     @save_listener.call(self, path) if @save_listener
   end
 
+  def method_missing(missing, *args)
+    candidates = methods_that_sound_like(missing.to_s)
+
+    message = "You called an undefined method: #{missing}"
+
+    unless candidates.empty?
+      message += "\nDid you mean #{candidates.join('or')}?"
+    end
+    raise raise NoMethodError.new(message)
+  end
+
+  def methods_that_sound_like(name)
+    missing_soundex = Soundex.soundex(name.to_s)
+    public_methods.sort.find_all do |existing|
+      existing_soundex = Soundex.soundex(existing.to_s)
+      missing_soundex == existing_soundex
+    end
+  end
+
+  def self.const_missing( const_missing)
+    msg = %Q{You tried to reference the constant #{const_missing}
+              There is no such constant in Document class.
+    }
+    raise msg
+  end
 end
+
+
+
+
 
 
 my_doc = Document.new( 'Block Based Example', 'russ', '' )
-my_doc.on_load do |doc|
-  puts "Hey, I've been loaded!"
-end
-my_doc.on_save do |doc|
-  puts "Hey, I've been saved!"
-end
-
-
-
+puts my_doc.loquesea = 2
+my_doc = Document.new.otra
+my_doc = 4
 
 
 
